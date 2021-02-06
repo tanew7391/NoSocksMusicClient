@@ -7,15 +7,14 @@ class MyApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      greeting: ''
+      name: 'Mike',
+      greeting: 'Hello'
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    console.log(event.target.value)
     this.setState({ name: event.target.value });
   }
 

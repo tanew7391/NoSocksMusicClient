@@ -6,7 +6,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const dotenv = require('dotenv');
 dotenv.config();
 const port = process.env.SERVER_PORT || "5000";
-const scopeList = ["user-follow-modify", "user-follow-read"]
+const scopeList = ["user-library-read", "user-top-read"]
 
 
 // init Spotify API wrapper
@@ -50,6 +50,32 @@ app.get("/authorize", (req, res) => {
     console.log(authorizeURL)
     res.redirect(authorizeURL);
 });
+
+app.get('/userTracks', (req, res) => {
+    if (!isAutho) {
+        res.redirect('/');
+        return;
+    }
+    var topTracks = [];
+
+    spotifyApi.getMyTopTracks({
+        time_range: "long_term",
+        limit: 50,
+        offset: 0
+    })
+        .then(function (data) {
+            for (const item of data.body.items) {
+                for(const photo of item.album.images){
+                    topTracks.push(photo.url);
+                }
+            }
+            res.render('albumns', { images: topTracks });
+        },
+            function (err) {
+                console.log('Something went wrong!', err);
+                res.redirect('/');
+            });
+})
 
 
 app.get('/api/greeting', (req, res) => {
